@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Typing Game</title>
+    <style>
+        /* General styling for the body */
+        body {
+            margin: 0;
+            overflow: hidden; /* Prevent scrolling */
+            background-color: #000; /* Set background color to black */
+            color: #fff; /* Set text color to white */
+            font-family: Arial, sans-serif; /* Set font */
+        }
+        
+        /* Styling for the game canvas */
+        #gameCanvas {
+            display: block;
+            margin: 0 auto; /* Center the canvas horizontally */
+            outline: none; /* Remove focus outline */
+            z-index: 1; /* Ensure the canvas appears above the lava */
+        }
+        
+        /* Styling for the score display */
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            z-index: 1; /* Display score above other elements */
+        }
+        
+        /* Styling for the lava at the bottom of the screen */
+        #lava {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('https://i.ibb.co/YjgWVwt/lava12.png') no-repeat top center; /* Set lava image as background */
+            background-size: cover; /* Ensure the image covers the entire area */
+            z-index: -1; /* Place lava behind other elements */
+        }
+        
+        /* Styling for the splash screen */
+        #splashScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2; /* Ensure splash screen appears above everything */
+        }
+        
+        /* Styling for the title in the splash screen */
+        #splashScreen h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        /* Styling for the instructions in the splash screen */
+        #splashScreen p {
+            font-size: 24px;
+            margin: 10px;
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        /* Styling for the start button */
+        #startButton {
+            font-size: 24px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash screen with game instructions and start button -->
+    <div id="splashScreen">
+        <h1>Typing Game</h1>
+        <p>
+            Welcome to the Typing Game! English words and sentences will fall towards the lava.
+            Above each word, you'll see its Swedish translation. Type the English words correctly to save them.
+            Correctly typed letters turn green. When a word is fully typed, it will ascend, and you earn 1 point.
+            If a word reaches the lava, you lose 1 point (score won't go below zero).
+            Once you reach 20 points, the English words become invisible until you type them!
+        </p>
+        <p>
+            Click "Start Game" to begin. Focus the game window to start typing!
+        </p>
+        <button id="startButton">Start Game</button>
+    </div>
+    
+    <!-- Main game canvas -->
+    <canvas id="gameCanvas" width="800" height="600" tabindex="1"></canvas>
+    
+    <!-- Score display -->
+    <div id="score">Score: 0</div>
+    
+    <!-- Lava background at the bottom of the screen -->
+    <div id="lava"></div>
+    
+    <script>
+        // References to HTML elements
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score');
+        const splashScreen = document.getElementById('splashScreen');
+        const startButton = document.getElementById('startButton');
+
+        // Words used in the game (English and Swedish pairs)
+        const words = [
+            { english: "Hello", swedish: "Hej" },
+            { english: "World", swedish: "Världen" },
+            { english: "Programming", swedish: "Programmering" },
+            { english: "Computer", swedish: "Dator" },
+            { english: "Keyboard", swedish: "Tangentbord" },
+            { english: "Mouse", swedish: "Mus" },
+            { english: "Screen", swedish: "Skärm" },
+            { english: "Internet", swedish: "Internet" },
+            { english: "Language", swedish: "Språk" },
+            { english: "Education", swedish: "Utbildning" },
+        ];
+
+        let fallingWords = []; // Array to store words falling on screen
+        let score = 0; // Player's score
+        let gameInterval; // Interval for spawning words
+        let gamePaused = false; // Game paused state
+
+        // Class to handle particle effects
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.radius = Math.random() * 6 + 2; // Random particle size
+                this.color = color;
+                this.speedX = (Math.random() - 0.5) * 4; // Random horizontal speed
+                this.speedY = (Math.random() - 0.5) * 4; // Random vertical speed
+                this.alpha = 1; // Transparency level
+            }
+
+            update() {
+                this.x += this.speedX; // Update position based on speed
+                this.y += this.speedY;
+                this.alpha -= 0.02; // Gradually fade out
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha; // Set transparency
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); // Draw circle
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        let particles = []; // Array to store particle effects
+
+        // Class to handle falling words
+        class FallingWord {
+            constructor(wordObj) {
+                this.english = wordObj.english; // English word
+                this.swedish = wordObj.swedish; // Swedish translation
+                this.matchedLength = 0; // Number of letters matched by user
+                this.isAscending = false; // Whether the word is ascending after being matched
+                this.speed = Math.random() * 1 + 0.5; // Falling speed
+                this.y = -50; // Initial vertical position (above the canvas)
+
+                // Calculate text width to position the word correctly
+                ctx.font = '24px Arial';
+                const englishWidth = ctx.measureText(this.english).width;
+                ctx.font = '20px Arial';
+                const swedishWidth = ctx.measureText(this.swedish).width;
+                const textWidth = Math.max(englishWidth, swedishWidth);
+
+                const minX = textWidth / 2 + 10;
+                const maxX = canvas.width - textWidth / 2 - 10;
+
+                this.x = Math.random() * (maxX - minX) + minX; // Random horizontal position
+            }
+
+            update() {
+                if (!this.isAscending) {
+                    this.y += this.speed; // Fall down if not ascending
+                } else {
+                    this.y -= this.speed * 2; // Move up if ascending
+                }
+            }
+
+            draw() {
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.font = '20px Arial';
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#555';
+                const swedishTextWidth = ctx.measureText(this.swedish).width;
+                const swedishStartX = this.x - swedishTextWidth / 2;
+                ctx.fillText(this.swedish, swedishStartX, this.y - 30); // Draw Swedish translation above the word
+
+                ctx.font = '24px Arial';
+                let beforeMatch = this.english.substring(0, this.matchedLength); // Matched part of the word
+                let afterMatch = this.english.substring(this.matchedLength); // Unmatched part
+                let totalTextWidth = ctx.measureText(this.english).width;
+                let startX = this.x - totalTextWidth / 2;
+
+                if (this.isAscending) {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 1)'; // Set ascending word color to white
+                    ctx.shadowColor = 'white';
+                    ctx.shadowBlur = 10; // Add shadow to hint at word position
+                } else {
+                    ctx.fillStyle = 'rgba(59, 247, 75, 1)';
+                }
+                
+                ctx.fillText(beforeMatch, startX, this.y); // Draw matched part
+                let beforeMatchWidth = ctx.measureText(beforeMatch).width;
+
+                let unmatchedColor = 'rgba(255, 209, 110, 1)'; // Default color for unmatched part
+                if (score >= 25 && score <= 49) {
+                    unmatchedColor = 'black'; // Make text invisible at certain score
+                    ctx.shadowColor = 'rgba(255, 209, 110, 0.4)';
+                    ctx.shadowBlur = 8; // Add shadow to hint at word position
+                } else if (score >= 50) {
+                    unmatchedColor = 'black'; // Completely invisible at higher score
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+
+                ctx.fillStyle = unmatchedColor;
+                ctx.fillText(afterMatch, startX + beforeMatchWidth, this.y); // Draw unmatched part
+            }
+        }
+
+        // Function to spawn a new word
+        function spawnWord() {
+            if (!gamePaused) {
+                let wordObj = words[Math.floor(Math.random() * words.length)]; // Select a random word
+                let word = new FallingWord(wordObj); // Create a new FallingWord instance
+                fallingWords.push(word); // Add to falling words array
+            }
+        }
+
+        // Function to update the game state
+        function update() {
+            if (!gamePaused) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+                ctx.fillStyle = "rgba(255, 255, 255, 0.0)";
+                ctx.fillRect(0, canvas.height - 50, canvas.width, 50); // Draw transparent lava area
+
+                // Update and draw all falling words
+                fallingWords.forEach((word) => {
+                    word.update();
+                    word.draw();
+                });
+
+                // Update and draw all particles
+                particles.forEach((particle, index) => {
+                    particle.update();
+                    if (particle.alpha <= 0) {
+                        particles.splice(index, 1); // Remove faded out particles
+                    } else {
+                        particle.draw();
+                    }
+                });
+
+                // Filter out words that have expired
+                fallingWords = fallingWords.filter((word) => {
+                    if (word.isAscending && word.y < -50) {
+                        return false; // Remove word if it ascends off-screen
+                    }
+                    if (!word.isAscending && word.y > canvas.height - 50) {
+                        // Word hits the lava
+                        if (score > 0) {
+                            score -= 1; // Decrease score
+                            scoreDisplay.innerText = 'Score: ' + score;
+                        }
+                        // Create particle effects for splash
+                        for (let i = 0; i < 20; i++) {
+                            particles.push(new Particle(word.x, canvas.height - 30, 'red'));
+                        }
+                        return false; // Remove word after hitting lava
+                    }
+                    return true; // Keep word
+                });
+            }
+
+            requestAnimationFrame(update); // Call update again on the next frame
+        }
+
+        // Function to start the game
+        function startGame() {
+            splashScreen.style.display = 'none'; // Hide splash screen
+            canvas.focus(); // Focus on the canvas to capture key input
+            gameInterval = setInterval(spawnWord, 3000); // Spawn a new word every 3 seconds
+            update(); // Start the game loop
+        }
+
+        // Event listener for the start button
+        startButton.addEventListener('click', startGame);
+
+        // Event listener for key presses
+        canvas.addEventListener('keydown', (e) => {
+            let key = e.key;
+            if (key.length !== 1) return; // Ignore non-character keys
+
+            fallingWords.forEach((word) => {
+                if (!word.isAscending) {
+                    let expectedChar = word.english.charAt(word.matchedLength);
+                    if (expectedChar.toLowerCase() === key.toLowerCase()) {
+                        word.matchedLength += 1; // Update matched length
+
+                        if (word.matchedLength === word.english.length) {
+                            word.isAscending = true; // Make word ascend if fully matched
+                            score += 1; // Increase score
+                            scoreDisplay.innerText = 'Score: ' + score;
+                            // Create particle effects for rescue
+                            for (let i = 0; i < 5; i++) {
+                                particles.push(new Particle(word.x, word.y, 'white'));
+								var audio = new Audio('https://whyp.it/tracks/embed?id=214188&token=48IgL');
+								audio.play();
+                            }
+                        }
+                    } else {
+                        word.matchedLength = 0; // Reset matched length if incorrect
+                    }
+                }
+            });
+        });
+
+        // Event listeners for visibility change to pause/resume game
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                gamePaused = true; // Pause the game when tab is not active
+                clearInterval(gameInterval); // Stop spawning new words
+            } else {
+                gamePaused = false; // Resume the game when tab is active
+                gameInterval = setInterval(spawnWord, 3000); // Restart spawning words
+            }
+        });
+    </script>
+</body>
+</html>
