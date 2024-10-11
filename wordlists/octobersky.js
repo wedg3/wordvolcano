@@ -1,1 +1,18 @@
-
+        const words = [
+            { english: "rocket", swedish: "raket" },
+            { english: "coal", swedish: "kol" },
+            { english: "engineer", swedish: "ingenjör" },
+            { english: "launch", swedish: "uppskjutning" },
+            { english: "nozzle", swedish: "munstycke" },
+            { english: "thrust", swedish: "skjutkraft" },
+            { english: "trajectory", swedish: "bana" },
+            { english: "ignition", swedish: "tändning" },
+            { english: "propellant", swedish: "drivmedel" },
+            { english: "astronomy", swedish: "astronomi" },
+            { english: "missile", swedish: "missil" },
+            { english: "altitude", swedish: "höjd" },
+            { english: "welding", swedish: "svetsning" },
+            { english: "velocity", swedish: "hastighet" },
+            { english: "scholarship", swedish: "stipendium" },
+            { english: "science fair", swedish: "vetenskapsmässa" },
+        ];
