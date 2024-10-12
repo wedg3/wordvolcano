@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Volcano</title>
+    <style>
+        /* General styling for the body */
+        body {
+            margin: 0;
+            overflow: hidden; /* Prevent scrolling */
+            background-color: #000; /* Set background color to black */
+            color: #fff; /* Set text color to white */
+            font-family: "Open Sans", sans-serif;
+        }
+        
+        /* Styling for the game canvas */
+        #gameCanvas {
+            display: block;
+            margin: 0;  /* No margins */
+            outline: none;  /* Remove focus outline */
+            z-index: 1;
+        }
+        
+        /* Styling for the score display */
+        #score {
+          font-family: "Open Sans", sans-serif;
+		  color: #000000;
+          letter-spacing: 2px;
+          text-decoration: none;
+          text-transform: uppercase;
+		  -webkit-text-stroke-width: 0.5px;
+		  -webkit-text-stroke-color: white;
+          position: fixed;
+          top: 20px;
+          left: 20px;
+          font-size: 2vw;  /* Adjusts based on screen width for scalability */
+          z-index: 2;  /* Display score above all elements */
+        }
+        
+        /* Styling for the timer display */
+        #timer {
+          font-family: "Open Sans", sans-serif;
+          letter-spacing: 2px;
+          text-decoration: none;
+          text-transform: uppercase;
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          font-size: 1vw;  /* Adjusts based on screen width for scalability */
+          z-index: 2;  /* Display timer above all elements */
+        }
+        
+        /* Styling for the lava at the bottom of the screen */
+        #lava {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 128px;  /* Use vh to make height proportional to the viewport */
+            background: url('images/lava6.gif') center center repeat; /* Set lava image as background */
+            // background-size: cover; /* Ensure the image covers the entire area */
+            z-index: -1; /* Ensure the lava is behind the other elements */
+        }
+        
+        /* Styling for the splash screen */
+        #splashScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2; /* Ensure splash screen appears above everything */
+        }
+        
+        /* Styling for the title in the splash screen */
+        #splashScreen h1 {
+            font-size: 48px;
+            margin-bottom: 1px;
+        }
+        
+        /* Styling for the instructions in the splash screen */
+        #splashScreen p {
+            font-family: "Open Sans", sans-serif;
+            font-size: 18px;
+            margin: 8px;
+            text-align: center;
+            max-width: 1024px;
+			letter-spacing: 2px;
+        }
+        
+        /* Styling for the start button */
+        #startButton {
+            font-family: "Open Sans", sans-serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-decoration: none;
+            text-transform: uppercase;
+            color: #000;
+            cursor: pointer;
+            border: 3px solid;
+            padding: 0.25em 0.5em;
+            box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+            position: relative;
+			margin-bottom: 0px;
+			margin-top: 30px;
+        }
+
+        /* Styling for the ending screen */
+        #endingScreen {
+            font-family: "Open Sans", sans-serif;
+            font-size: 20px;
+            letter-spacing: 3px;
+            text-decoration: none;
+            text-transform: uppercase;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Semi-transparent background */
+            color: #fff;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 3; /* Ensure ending screen appears above everything */
+			line-height: 0.0;
+        }
+        #decreaseFont{
+            font-size:14px;
+        }
+		
+		#dynamic-heading {
+		   color: #00fffb;
+		   margin-bottom: 40px;
+		}
+		
+		#dynamic-ending {
+		   color: #00fffb;
+		   margin-bottom: 60px;
+		}
+		
+		#flashtitle{
+      -webkit-animation:colorchange 2s infinite alternate;
+	  -webkit-text-stroke-width: 0.0px;
+	  -webkit-text-stroke-color: white;
+    }
+
+    @-webkit-keyframes colorchange {
+      0% {
+        color: #ffcc00;
+      }   
+      50% {     
+        color: #ff6200;
+      }   
+      100% {
+        color: #ff1100;
+      }
+    }
+	
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.2.0"></script>
+</head>
+
+<body>
+    <!-- Splash screen with game instructions and start button -->
+    <div id="splashScreen">
+        <h1 id="flashtitle">Word Volcano</h1>
+		<i><h2 id="dynamic-heading"></h2></i>
+		<p>You have to save the words by typing them correctly!</p>
+        <p>You get +1 point per word. You get -1 point if it falls into lava.</p>
+        <p>It gets harder as you progress!</p>
+        <p>Reach <b>100 points</b> to win!</p>
+        <button id="startButton">Start Game</button>
+	    </div>
+    
+    <!-- Main game canvas -->
+    <canvas id="gameCanvas" tabindex="1"></canvas>
+    
+    <!-- Score display -->
+    <div id="score">Score: 0</div>
+
+    <!-- Timer display -->
+    <div id="timer">Time: 00:00</div>
+    
+    <!-- Lava background at the bottom of the screen -->
+    <div id="lava"></div>
+
+    <!-- Ending screen -->
+    <div id="endingScreen">
+        <h1>Amazing!</h1>
+        <h3>You reached 100 points on</h3>
+		<h3 id="dynamic-ending"></h3>
+		<div id="finalTime"></div></i>
+		<p></p>
+		 <div id="decreaseFont"><p>Show this screen to your teacher!</p></div>
+    </div>
+	
+<script src="game.js"></script>    
+
+</body>
+</html>
