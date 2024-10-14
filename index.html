@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Volcano</title>
+    <style>
+        /* General styling for the body */
+        body {
+            margin: 0;
+            overflow: hidden; /* Prevent scrolling */
+            background-color: #000; /* Set background color to black */
+            color: #fff; /* Set text color to white */
+            font-family: "Open Sans", sans-serif;
+        }
+        
+		a:link {
+		  color: #0099ff;
+		}
+
+		a:visited {
+		  color: #0099ff;
+		}
+
+		a:hover {
+		  color: #ffa600;
+		}
+
+		a:active {
+		  color: #ffa600;
+		}
+        
+        /* Styling for the lava at the bottom of the screen */
+        #lava {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 128px;  /* Use vh to make height proportional to the viewport */
+            background: url('images/lava6.gif') center center repeat; /* Set lava image as background */
+            // background-size: cover; /* Ensure the image covers the entire area */
+            z-index: -1; /* Ensure the lava is behind the other elements */
+        }
+        
+        /* Styling for the splash screen */
+        #splashScreen {  
+			background-color: rgba(0, 0, 0, 0.5);	
+			width: 500px;
+			padding: 10px;
+			height: 360px;
+			position: absolute;
+			margin-top: -25px;
+			margin-left: -250px;
+			top: 10%;
+			left: 50%;
+		    text-align: center;
+            max-width: 1024px;
+			letter-spacing: 3px;
+
+            z-index: 2; /* Ensure splash screen appears above everything */
+        }
+        
+        /* Styling for the title in the splash screen */
+        #splashScreen h1 {
+            font-size: 24px;
+            margin-bottom: 1px;
+			
+        }
+		
+        #splashScreen h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+			margin-top: 40px;
+			
+			
+        }
+        
+        /* Styling for the instructions in the splash screen */
+        #splashScreen p {
+            font-family: "Open Sans", sans-serif;
+            font-size: 14px;
+            margin: 8px;
+            text-align: center;
+            max-width: 1024px;
+			letter-spacing: 2px;
+        }
+		
+		    #splashScreen a {
+            font-family: "Open Sans", sans-serif;
+            font-size: 14px;
+            margin: 8px;
+            text-align: center;
+            max-width: 1024px;
+			
+        }
+		
+
+        #decreaseFont{
+            font-size:14px;
+        }
+		
+		#dynamic-heading {
+		   color: #00fffb;
+		   margin-bottom: 40px;
+		}
+		
+		#flashtitle{
+      -webkit-animation:colorchange 2s infinite alternate;
+	  -webkit-text-stroke-width: 0.0px;
+	  -webkit-text-stroke-color: white;
+      
+      
+    }
+
+    @-webkit-keyframes colorchange {
+      0% {
+        color: #ffcc00;
+      }   
+      50% {     
+        color: #ff6200;
+      }   
+      100% {
+        color: #ff1100;
+      }
+	  
+	  
+    }
+		
+    </style>
+</head>
+<body>
+  	    <div id="splashScreen">
+		<h1 id="flashtitle">Word Volcano Collection</h1>
+		<h2>20 short hard-to-spell words</h2>
+		<a href="game.html?wordlist=1_shorthard1.js">Version #1</a>
+		<a href="game.html?wordlist=1_shorthard2.js">Version #2</a>
+		<a href="game.html?wordlist=1_shorthard3.js">Version #3</a>
+		<h2>15 midsize hard-to-spell words</h2>
+		<a href="game.html?wordlist=2_mediumhard1.js">Version #1</a>
+		<a href="game.html?wordlist=2_mediumhard2.js">Version #2</a>
+		<a href="game.html?wordlist=2_mediumhard3.js">Version #3</a>
+		<h2>10 long hard-to-spell words</h2>
+		<a href="game.html?wordlist=3_longhard1.js">Version #1</a>
+		<a href="game.html?wordlist=3_longhard2.js">Version #2</a>
+		<a href="game.html?wordlist=3_longhard3.js">Version #3</a>
+		<p></p>
+		<a href="game.html?wordlist=3_longhard4.js">Version #4</a>
+		<a href="game.html?wordlist=3_longhard5.js">Version #5</a>
+	    </div>
+    <!-- Lava background at the bottom of the screen -->
+    <div id="lava"></div>
+
+</body>
+</html>
