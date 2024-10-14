@@ -382,7 +382,7 @@
                             rescue.play();
 
                             // Check if player reached 100 points
-                            if (score >= 3) {
+                            if (score >= 100) {
                                 clearInterval(gameInterval);
                                 showEndingScreen();
                                 gamePaused = true;
