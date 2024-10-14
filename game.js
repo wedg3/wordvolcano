@@ -52,15 +52,11 @@
         const timerDisplay = document.getElementById('timer');
         const finalTimeDisplay = document.getElementById('finalTime');
 		
-
-
-		
         var death = new Audio('audio/bubble1.mp3');
         var rescue = new Audio('audio/rescue1.mp3');
 
         // Words used in the game (English and Swedish pairs)
 
-        
         let gameRunning = false; // Track if the game is running
 		let fallingWords = []; // Array to store words falling on screen
         let score = 0; // Player's score
@@ -149,7 +145,7 @@
                 this.swedish = wordObj.swedish; // Swedish translation
                 this.matchedLength = 0; // Number of letters matched by user
                 this.isAscending = false; // Whether the word is ascending after being matched
-                this.speed = Math.random() * 1 + 0.3; // Falling speed
+                this.speed = Math.random() * 1 + 0.4; // Falling speed
                 this.y = -50; // Initial vertical position (above the canvas)
 
                 // Calculate text width to position the word correctly
