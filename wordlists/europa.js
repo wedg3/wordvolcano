@@ -8,6 +8,7 @@ const words = [
     { english: "organisms", swedish: "organismer" },
     { english: "evolved", swedish: "utvecklats" },
     { english: "penetrating", swedish: "genomträngande" },
+    { english: "habitable", swedish: "bebolig" },
     { english: "thrive", swedish: "frodas" },
     { english: "crater", swedish: "krater" },
     { english: "orbit", swedish: "omloppsbana" },
