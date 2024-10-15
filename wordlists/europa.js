@@ -1,11 +1,11 @@
 const wordlisttitle = "Mission to Europa";
 
 const words = [
-    { english: "launch", swedish: "uppskjutning" },
+    { english: "depth", swedish: "djup" },
     { english: "surface", swedish: "yta" },
     { english: "vast", swedish: "gigantiskt/omfattande" },
     { english: "explore", swedish: "utforska" },
-    { english: "organisms", swedish: "organismer" },
+    { english: "oxygen", swedish: "syre" },
     { english: "evolved", swedish: "utvecklats" },
     { english: "penetrating", swedish: "genomträngande" },
     { english: "habitable", swedish: "bebolig" },
