@@ -158,7 +158,7 @@
                 this.matchedLength = 0; // Number of letters matched by user
                 this.isAscending = false; // Whether the word is ascending after being matched
 				
-				this.speed = Math.random() * 1 + 0.35; // Falling speed // Falling speed
+				this.speed = Math.random() * 1 + 0.3; // Falling speed // Falling speed
 				// this.speed = Math.random() * 1 + 0.3; // Falling speed
                 this.y = -50; // Initial vertical position (above the canvas)
 
