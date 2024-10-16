@@ -16,7 +16,7 @@ const words = [
     { english: "skeptical", swedish: "skeptisk" },
     { english: "simulate", swedish: "simulera" },
     { english: "interpret", swedish: "tolka" },
-    { english: "profound", swedish: "djup" }
+    { english: "profound", swedish: "djupgående" }
 ];
 
 
