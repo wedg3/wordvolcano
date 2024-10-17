@@ -330,7 +330,7 @@
 			
 			
 			
-			// backgroundMusic.play();
+			backgroundMusic.play();
 			
 			canvas.focus(); // Focus on the canvas to capture key input
 			
