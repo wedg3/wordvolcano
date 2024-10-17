@@ -3,7 +3,7 @@ const wordlisttitle = "Short hard-to-spell words #1";
 const words = [
     { english: "ache", swedish: "värk" },
     { english: "aisle", swedish: "gång (korridor)" },
-    { english: "awkward", swedish: "besvärlig" },
+    { english: "awkward", swedish: "pinsam/besvärlig" },
     { english: "brawl", swedish: "bråk" },
     { english: "choir", swedish: "kör" },
     { english: "colonel", swedish: "överste" },
