@@ -1,4 +1,4 @@
-const wordlisttitle = "Adjectives Guess Who";
+const wordlisttitle = "Adjectives: Guess Who";
 
 const words = [
     { english: "tall", swedish: "lång" },
