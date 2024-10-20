@@ -93,19 +93,13 @@
 			if (isMuted) {
 				// If currently muted, unmute and change image back
 				backgroundMusic.volume = 0.6;
-				death.volume = 0.3;
-				rescueeffect.forEach(sound => {
-				sound.volume = 0.2;
-				});
+
 				musicButton.src = 'images/musicon.gif'; // Change back to original image
 				musicButton.alt = "Volume On"; // Update alt text for accessibility
 			} else {
 				// If not muted, mute and change image
 				backgroundMusic.volume = 0.0;
-				death.volume = 0.0;
-				rescueeffect.forEach(sound => {
-				sound.volume = 0.0;
-				});
+
 				musicButton.src = 'images/musicoff.gif'; // Change to muted image
 				musicButton.alt = "Volume Off"; // Update alt text for accessibility
 			}
