@@ -58,12 +58,65 @@
 
 
 		
-        var death = new Audio('audio/bubble1.mp3');
-        var rescue = new Audio('audio/rescue1.mp3');
-		var backgroundMusic = new Audio('audio/asteroidsong2.mp3');
-		backgroundMusic.loop = true;   // Play on loop
-		backgroundMusic.volume = 0.6;  // Set volume
+        const death = new Audio('audio/bubble1.mp3');
+		const fanfare = new Audio('audio/cheer1.mp3');
+		const backgroundMusic = new Audio('audio/volcanosongnew5.mp3');	
 		
+		
+		// const rescue1 = new Audio('audio/am1.mp3'); // First sound effect
+		let rescueeffect = [
+			new Audio('audio/am1.mp3'),
+			new Audio('audio/am2.mp3'),
+			new Audio('audio/am3.mp3')
+		];
+		rescueeffect.forEach(sound => {
+		sound.volume = 0.2;
+		});
+		
+        let currentSoundIndex = 0; 
+		 
+		
+		fanfare.volume = 0.5; 
+		death.volume = 0.3;
+
+		backgroundMusic.loop = true;  
+		backgroundMusic.volume = 0.6; 
+		
+		
+		let musicButton = document.getElementById('musicButton');
+		
+		let isMuted = false; // To keep track of the current state
+
+		// Add an event listener to the image/button
+		musicButton.addEventListener('click', function() {
+
+			if (isMuted) {
+				// If currently muted, unmute and change image back
+				backgroundMusic.volume = 0.6;
+				death.volume = 0.3;
+				rescueeffect.forEach(sound => {
+				sound.volume = 0.2;
+				});
+				musicButton.src = 'images/musicon.gif'; // Change back to original image
+				musicButton.alt = "Volume On"; // Update alt text for accessibility
+			} else {
+				// If not muted, mute and change image
+				backgroundMusic.volume = 0.0;
+				death.volume = 0.0;
+				rescueeffect.forEach(sound => {
+				sound.volume = 0.0;
+				});
+				musicButton.src = 'images/musicoff.gif'; // Change to muted image
+				musicButton.alt = "Volume Off"; // Update alt text for accessibility
+			}
+			
+			// Toggle the isMuted flag
+			isMuted = !isMuted;
+			
+			canvas.focus();
+		});
+		
+
 		
         // Words used in the game (English and Swedish pairs)
 
@@ -95,7 +148,17 @@
 			console.log("Speed set to:", speed, "Label:", speedLabel); // For debugging purposes
         }
 
-
+		function playSound() {
+			// Get the current sound effect from the array
+			let currentSound = rescueeffect[currentSoundIndex];
+			
+			// Play the sound
+			currentSound.currentTime = 0; // Reset to start
+			currentSound.play();
+			
+			// Increment the index, and reset it to 0 if we reach the end of the array
+			currentSoundIndex = (currentSoundIndex + 1) % rescueeffect.length;
+		}
 		
         function triggerConfetti() {
             var end = Date.now() + (15 * 1000);
@@ -197,14 +260,14 @@
             draw() {
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'middle';
-                ctx.font = '20px Courier New';
+                ctx.font = '18px Rethink Sans';
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = '#FFFFFF';
                 const swedishTextWidth = ctx.measureText(this.swedish).width;
                 const swedishStartX = this.x - swedishTextWidth / 2;
                 ctx.fillText(this.swedish, swedishStartX, this.y - 30); // Draw Swedish translation above the word
 
-                ctx.font = '24px Courier New';
+                ctx.font = '22px Rethink Sans';
                 let beforeMatch = this.english.substring(0, this.matchedLength); // Matched part of the word
                 let afterMatch = this.english.substring(this.matchedLength); // Unmatched part
                 let totalTextWidth = ctx.measureText(this.english).width;
@@ -222,10 +285,10 @@
                 ctx.fillText(beforeMatch, startX, this.y); // Draw matched part
                 let beforeMatchWidth = ctx.measureText(beforeMatch).width;
 
-                let unmatchedColor = 'rgba(255, 209, 110, 1)'; // Default color for unmatched part
+                let unmatchedColor = 'rgba(242, 189, 13, 1)'; // Default color for unmatched part
                 if (score >= 40 && score <= 69) {
                     unmatchedColor = 'black'; // Make text invisible at certain score
-                    ctx.shadowColor = 'rgba(255, 209, 110, 0.7)';
+                    ctx.shadowColor = 'rgba(255, 209, 110, 0.35)';
                     ctx.shadowBlur = 8; // Add shadow to hint at word position
                 } else if (score >= 70) {
                     unmatchedColor = 'black'; // Completely invisible at higher score
@@ -243,9 +306,6 @@
             if (!gamePaused) {
                 let wordObj = words[Math.floor(Math.random() * words.length)]; // Select a random word
                 let word = new FallingWord(wordObj); // Create a new FallingWord instance
-				
-				
-				
                 fallingWords.push(word); // Add to falling words array
             }
         }
@@ -286,7 +346,7 @@
                         }
                         // Create particle effects for splash
                         for (let i = 0; i < 40; i++) {
-                            particles.push(new Particle(word.x, canvas.height - 50, 'rgba(255, 106, 0)'));
+                            particles.push(new Particle(word.x, canvas.height - 50, '#f2bd0d'));
                         }
                         
                         death.play();
@@ -328,8 +388,7 @@
                 message.style.visibility = 'hidden';
             }, 5000); // Fully hide after fading out (2s + 2s)
 			
-			
-			
+
 			backgroundMusic.play();
 			
 			canvas.focus(); // Focus on the canvas to capture key input
@@ -364,8 +423,7 @@
             clearInterval(timerInterval); // Stop the timer
             let wordsToAnimate = [...words];
             let wordElements = [];
-            var fanfare = new Audio('audio/fanfare2.mp3');
-            fanfare.volume = 0.2; // Set volume to 50%
+
             fanfare.play();
             triggerConfetti();
 
@@ -405,9 +463,9 @@
                             for (let i = 0; i < 5; i++) {
                                 particles.push(new Particle(word.x, word.y, 'white'));
                             }
-
-                            rescue.volume = 0.4; // Set volume to 50%
-                            rescue.play();
+                              
+							playSound();
+							//rescue1.play();
 
                             // Check if player reached 100 points
                             if (score >= 100) {
@@ -422,6 +480,7 @@
                 }
             });
         });
+
 
 
 		// Function to clear all game intervals and animations
