@@ -10,7 +10,7 @@ const words = [
     { english: "castle", swedish: "slott" },
     { english: "fortress", swedish: "fästning" },
     { english: "cellar", swedish: "källare" },
-    { english: "hunting", swedish: "jakt" },
+    { english: "hunting", swedish: "jaga" },
     { english: "goat", swedish: "get" },
     { english: "flesh", swedish: "kött" },
     { english: "dare", swedish: "våga" },
