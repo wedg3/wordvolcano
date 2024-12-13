@@ -1,3 +1,5 @@
+
+
 const words = [
     { english: "jumped", swedish: "hoppade" },
     { english: "sounds", swedish: "ljud" },
@@ -11,3 +13,6 @@ const words = [
     { english: "too salty", swedish: "för salt" },
     { english: "finally", swedish: "äntligen" }
 ];
+
+document.getElementById("dynamic-heading").textContent = wordlisttitle;
+document.getElementById("dynamic-ending").textContent = wordlisttitle;
