@@ -1,4 +1,4 @@
-
+const wordlisttitle = "Words of student T";
 
 const words = [
     { english: "jumped", swedish: "hoppade" },
