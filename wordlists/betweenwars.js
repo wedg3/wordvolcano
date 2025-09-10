@@ -9,6 +9,7 @@ const words = [
     { english: "fashion", swedish: "mode" },
     { english: "skyscraper", swedish: "skyskrapa" },
     { english: "automobile", swedish: "bil" },
+    { english: "convenient", swedish: "bekvämt" },
     { english: "prohibition", swedish: "förbudstiden (om alkohol)" },
     { english: "bootlegger", swedish: "smugglare" },
     { english: "depression", swedish: "depression" },
