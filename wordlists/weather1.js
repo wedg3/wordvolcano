@@ -1,6 +1,6 @@
 const wordlisttitle = "Weather Words";
 
-const weatherWords = [
+const words = [
     { english: "Sunny", swedish: "Soligt" },
     { english: "Cloudy", swedish: "Molnigt" },
     { english: "Rain", swedish: "Regn" },
