@@ -1,4 +1,4 @@
-const wordlisttitle = "Origins of Christmas;
+const wordlisttitle = "Origins of Christmas";
 
 const words = [
     { english: "agriculture", swedish: "jordbruk" },
