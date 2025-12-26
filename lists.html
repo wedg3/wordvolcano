@@ -10,9 +10,7 @@
   --grad1: #feac5e;
   --grad2: #c779d0;
   --grad3: #4bc0c8;
-  --bg: linear-gradient(135deg, var(--grad1), var(--grad2) 45%, var(--grad3) 100%);
-  --front-bg: linear-gradient(145deg, #5e548e 0%, #231942 70%, #0e0a1f 100%);
-  --back-bg: linear-gradient(145deg, #0a3a4a 0%, #0a2232 70%, #02141a 100%);
+
   --text: #fffaf7;
   --muted: #e6e6e6cc;
   --border: #ffffff;
@@ -28,11 +26,22 @@ body {
   flex-direction: column;
   align-items: center;      /* horizontal centering */
   justify-content: flex-start; /* move content to top */
-  background: var(--bg);
-  background-attachment: fixed;
+  background: #000000;
+  
   color: var(--text);
   text-align: center;
     padding-top: 40px; /* adjust as needed */
+}
+
+  #lava {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 128px;  /* Use vh to make height proportional to the viewport */
+  background: url('images/purplelava1.gif') center center repeat; /* Set lava image as background */
+  // background-size: cover; /* Ensure the image covers the entire area */
+  z-index: -1; /* Ensure the lava is behind the other elements */
 }
 .wrap {
   width: min(920px, 90vw);
@@ -113,5 +122,7 @@ const html = results.map(({name, title}) => {
 
 load();
 </script>
+
+    <div id="lava"></div>
 </body>
 </html>
