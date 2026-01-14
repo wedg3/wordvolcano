@@ -14,7 +14,7 @@ const words = [
     { english: "crowded", swedish: "trång" },
     { english: "camp", swedish: "slå läger" },
     { english: "disguise", swedish: "förklädnad" },
-    { english: "dreading", swedish: "vara rädd för" },
+    { english: "dreading", swedish: "oroa sig för" },
     { english: "territory", swedish: "område" },
     { english: "terrified", swedish: "jätterädd" },
     { english: "obstacle", swedish: "hinder" },
